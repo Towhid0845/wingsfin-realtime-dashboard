@@ -1,0 +1,74 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: wingsfin_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-wingsfin}
+      POSTGRES_USER: ${POSTGRES_USER:-wingsfin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-wingsfin123}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-wingsfin} -d ${POSTGRES_DB:-wingsfin}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: wingsfin_backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: ${BACKEND_PORT:-4000}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-wingsfin}
+      POSTGRES_USER: ${POSTGRES_USER:-wingsfin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-wingsfin123}
+      # Market hours (24h format, Asia/Dhaka timezone by default)
+      MARKET_OPEN_HOUR: ${MARKET_OPEN_HOUR:-10}
+      MARKET_OPEN_MINUTE: ${MARKET_OPEN_MINUTE:-0}
+      MARKET_CLOSE_HOUR: ${MARKET_CLOSE_HOUR:-14}
+      MARKET_CLOSE_MINUTE: ${MARKET_CLOSE_MINUTE:-30}
+      MARKET_TIMEZONE: ${MARKET_TIMEZONE:-Asia/Dhaka}
+      # Demo mode: override market hours for easy testing (set to "true" to enable)
+      DEMO_MODE: ${DEMO_MODE:-true}
+      DEMO_SESSION_DURATION_MINUTES: ${DEMO_SESSION_DURATION_MINUTES:-30}
+      # Simulator interval bounds (ms)
+      SIM_MIN_INTERVAL_MS: ${SIM_MIN_INTERVAL_MS:-500}
+      SIM_MAX_INTERVAL_MS: ${SIM_MAX_INTERVAL_MS:-3000}
+    ports:
+      - "${BACKEND_PORT:-4000}:4000"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: wingsfin_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:4000}
+      VITE_WS_URL: ${VITE_WS_URL:-ws://localhost:4000}
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+volumes:
+  postgres_data:
