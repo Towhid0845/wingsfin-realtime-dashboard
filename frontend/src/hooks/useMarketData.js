@@ -3,11 +3,10 @@ import { fetchIndexHistory, fetchStockHistory } from "../services/api";
 import { addMessageListener } from "../services/websocket";
 import { mergeLiveTick } from "../utils/chartUtils";
 
-/**
- * Hook that:
- *  1. Fetches historical series on mount / chartType change
- *  2. Listens for live WS updates and merges them into the series
- *  3. Returns { series, yesterdayClose, session, loading, error, latestValue }
+/*
+  1. Fetches historical series on mount / chartType change
+  2. Listens for live WS updates and merges them into the series
+  3. Returns { series, yesterdayClose, session, loading, error, latestValue }
  */
 export function useMarketData(chartType = "index") {
   const [series, setSeries] = useState([]);
@@ -17,7 +16,6 @@ export function useMarketData(chartType = "index") {
   const [error, setError] = useState(null);
   const [latestValue, setLatestValue] = useState(null);
 
-  // Keep a mutable ref to the series for the WS handler (avoids stale closure)
   const seriesRef = useRef([]);
 
   const loadHistory = useCallback(async () => {
