@@ -1,13 +1,7 @@
 "use strict";
 
-/**
- * Market configuration.
- *
- * DEMO_MODE=true  → a rolling window of DEMO_SESSION_DURATION_MINUTES is used
- *                   so you can always see a live session regardless of clock time.
- * DEMO_MODE=false → real DSE hours in MARKET_TIMEZONE are respected.
- */
-
+// demo mode: session is always open and lasts for DEMO_SESSION_DURATION_MINUTES minutes from server start
+// set DEMO_MODE=false to use real DSE hours (10am-2:30pm)
 const DEMO_MODE = process.env.DEMO_MODE === "true";
 const DEMO_DURATION_MS =
   parseInt(process.env.DEMO_SESSION_DURATION_MINUTES ?? "30", 10) * 60 * 1000;
@@ -18,14 +12,10 @@ const MARKET_CLOSE_HOUR = parseInt(process.env.MARKET_CLOSE_HOUR ?? "14", 10);
 const MARKET_CLOSE_MINUTE = parseInt(process.env.MARKET_CLOSE_MINUTE ?? "30", 10);
 const MARKET_TIMEZONE = process.env.MARKET_TIMEZONE ?? "Asia/Dhaka";
 
-/** Returns the current market session { open: ms, close: ms, isOpen: bool } */
 function getMarketSession() {
-  const now = Date.now();
+  const now = Date.now();  
 
   if (DEMO_MODE) {
-    // Rolling window: session started DEMO_DURATION_MS ago, closes now+small buffer
-    // We anchor the session start to the nearest clean minute in the past so the
-    // chart x-axis always starts on a round minute.
     const sessionStart = now - DEMO_DURATION_MS;
     const sessionClose = sessionStart + DEMO_DURATION_MS;
     return {
@@ -36,7 +26,7 @@ function getMarketSession() {
     };
   }
 
-  // Real market hours ─ evaluate in MARKET_TIMEZONE
+  // Calculate market open/close times in the specified timezone
   const nowInTz = new Date(
     new Date().toLocaleString("en-US", { timeZone: MARKET_TIMEZONE })
   );
@@ -47,7 +37,7 @@ function getMarketSession() {
   const close = new Date(nowInTz);
   close.setHours(MARKET_CLOSE_HOUR, MARKET_CLOSE_MINUTE, 0, 0);
 
-  // Weekday check: DSE is open Sun–Thu (0=Sun,1=Mon,...,4=Thu,5=Fri,6=Sat)
+  // Weekday check: DSE is open Sun–Thu (0=Sun,1=Mon,2=Tue,3=Wed,4=Thu,5=Fri,6=Sat)
   const day = nowInTz.getDay();
   const isWeekday = day >= 0 && day <= 4;
   const isOpen =

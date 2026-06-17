@@ -1,5 +1,7 @@
 "use strict";
 
+// DB connection pool and query helper using pg library
+
 const { Pool } = require("pg");
 
 const pool = new Pool({
@@ -26,9 +28,9 @@ async function query(text, params) {
   }
 }
 
-async function testConnection() {
+async function dbConnection() {
   const res = await query("SELECT NOW() AS now");
   console.log("[DB] Connected –", res.rows[0].now);
 }
 
-module.exports = { pool, query, testConnection };
+module.exports = { pool, query, dbConnection };
