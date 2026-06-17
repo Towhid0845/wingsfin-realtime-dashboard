@@ -15,7 +15,7 @@ describe("chartUtils", () => {
       expect(getPointColor(null, 90)).toBe(COLORS.equal);
     });
   });
-
+ 
   describe("buildColorArrays", () => {
     it("returns array matching series length", () => {
       const series = [

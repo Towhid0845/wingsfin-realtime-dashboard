@@ -7,9 +7,8 @@ export const COLORS = {
   text: "#e2e8f0",
 };
 
-/**
- * Returns the point colour based on value vs yesterday's close.
- */
+
+// Returns the point colour based on value vs yesterday's close.
 export function getPointColor(value, yesterdayClose) {
   if (value === null || yesterdayClose === null) return COLORS.equal;
   if (value > yesterdayClose) return COLORS.above;
@@ -17,16 +16,12 @@ export function getPointColor(value, yesterdayClose) {
   return COLORS.equal;
 }
 
-/**
- * Builds per-point background and border colour arrays for Chart.js.
- */
+// Builds per-point background and border colour arrays for Chart.js.
 export function buildColorArrays(series, yesterdayClose) {
   return series.map((pt) => getPointColor(pt.value, yesterdayClose));
 }
 
-/**
- * Format epoch ms → "HH:MM" for x-axis labels.
- */
+// Format epoch ms → "HH:MM" for x-axis labels.
 export function formatTime(ms) {
   if (!ms) return "";
   const d = new Date(ms);
@@ -37,17 +32,14 @@ export function formatTime(ms) {
   });
 }
 
-/**
- * Merge an incoming live tick into the existing series (mutates in place).
- * Follows the rules:
- *   - Floor the tick's time to the current minute.
- *   - If the minute already exists, overwrite with the new value (latest wins).
- *   - If a new minute has started, append it.
- *   - Carry-forward for any skipped minutes (shouldn't happen with live ticks
- *     but defensive).
- *
- * Returns the updated series (same reference).
- */
+// Merge an incoming live tick into the existing series (mutates in place).
+// Follows the rules:
+//   - Floor the tick's time to the current minute.
+//   - If the minute already exists, overwrite with the new value (latest wins).
+//   - If a new minute has started, append it.
+//   - Carry-forward for any skipped minutes (shouldn't happen with live ticks but defensive).
+//   - Returns the updated series (same reference).
+ 
 export function mergeLiveTick(series, tickMs, value, sessionOpenMs) {
   const MIN = 60_000;
   const tickMinute = Math.floor(tickMs / MIN) * MIN;
