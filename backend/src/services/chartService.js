@@ -1,33 +1,17 @@
 "use strict";
 
-/**
- * Converts raw DB rows (non-uniform ticks) into a complete 1-minute bucketed
- * series spanning [sessionOpenMs, sessionCloseMs].
- *
- * Rules:
- *  - If multiple ticks land in the same minute, the latest tick wins.
- *  - If a minute has no tick, carry-forward the last known value.
- *  - Minutes in the future (> now) are left null / not included.
- */
-
+// It strips everything below the minute boundary.
 function floorToMinute(ms) {
   return Math.floor(ms / 60_000) * 60_000;
 }
 
-/**
- * @param {Array<{time: bigint|number, value: number}>} ticks  sorted ASC by time
- * @param {number} sessionOpenMs
- * @param {number} sessionCloseMs
- * @param {number} nowMs
- * @returns {Array<{minuteMs: number, value: number|null}>}
- */
+// Build minute series from DB rows
 function buildMinuteSeries(ticks, sessionOpenMs, sessionCloseMs, nowMs) {
   const openMinute = floorToMinute(sessionOpenMs);
   const closeMinute = floorToMinute(sessionCloseMs);
   const currentMinute = floorToMinute(nowMs);
   const lastMinute = Math.min(closeMinute, currentMinute);
 
-  // Build a map: minuteMs → latest value in that minute
   const buckets = new Map();
   for (const tick of ticks) {
     const ms = typeof tick.time === "bigint" ? Number(tick.time) : Number(tick.time);
@@ -53,9 +37,7 @@ function buildMinuteSeries(ticks, sessionOpenMs, sessionCloseMs, nowMs) {
   return series;
 }
 
-/**
- * Build index series from DB rows.
- */
+// Build index series from DB rows.
 function buildIndexSeries(rows, sessionOpenMs, sessionCloseMs, nowMs) {
   const ticks = rows.map((r) => ({
     time: Number(r.time),
@@ -64,9 +46,7 @@ function buildIndexSeries(rows, sessionOpenMs, sessionCloseMs, nowMs) {
   return buildMinuteSeries(ticks, sessionOpenMs, sessionCloseMs, nowMs);
 }
 
-/**
- * Build stock series from DB rows.
- */
+// Build stock series from DB rows
 function buildStockSeries(rows, sessionOpenMs, sessionCloseMs, nowMs) {
   const ticks = rows.map((r) => ({
     time: Number(r.time),
