@@ -7,11 +7,9 @@ const { errorHandler, notFound } = require("./middleware/errorHandler");
 
 function createApp() {
   const app = express();
-
   app.use(cors({ origin: "*" }));
   app.use(express.json());
 
-  // Request logging in dev
   if (process.env.NODE_ENV !== "test") {
     app.use((req, _res, next) => {
       console.log(`[HTTP] ${req.method} ${req.path}`);
