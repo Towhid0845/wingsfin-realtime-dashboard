@@ -1,38 +1,27 @@
 "use strict";
 
-/**
- * Seeds historical data from the start of the current market session
- * up to (now - 1 minute) with intentionally non-uniform intervals to
- * simulate real-world data arrival patterns.
- */
-
 const { query } = require("./pool");
 const { getMarketSession } = require("../config/market");
 
 const DSEX_YESTERDAY_CLOSE = 5200.0;
 const GP_YESTERDAY_CLOSE = 238.88;
 
-/** Random integer between min and max (inclusive) */
 function randInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-/** Random float with dp decimal places */
 function randFloat(min, max, dp = 2) {
   return parseFloat((Math.random() * (max - min) + min).toFixed(dp));
 }
 
-/**
- * Generate a realistic random walk.
- * Returns an array of { time, value } with non-uniform time gaps.
- */
+
 function generateRandomWalk(startTime, endTime, startValue, maxDelta) {
   const points = [];
   let t = startTime;
   let value = startValue;
 
   while (t < endTime) {
-    // Non-uniform gap: between 5s and 90s (real-world: ticks come irregularly)
+    // Non-uniform gap between 5s and 90s (real-world ticks come irregularly)
     const gapMs = randInt(5_000, 90_000);
     t += gapMs;
     if (t >= endTime) break;

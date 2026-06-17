@@ -2,11 +2,8 @@
 
 const { query } = require("./pool");
 
-// ─── Index ────────────────────────────────────────────────────────────────────
 
-/**
- * Fetch all index snapshots in [fromMs, toMs] ordered by time ASC.
- */
+// ----------- Index queries ----------------
 async function getIndexHistory(indexId, fromMs, toMs) {
   const res = await query(
     `SELECT time, capital_value, percentage_change_from_yesterday_close, yesterday_close_value
@@ -18,9 +15,6 @@ async function getIndexHistory(indexId, fromMs, toMs) {
   return res.rows;
 }
 
-/**
- * Get the latest index snapshot.
- */
 async function getLatestIndex(indexId) {
   const res = await query(
     `SELECT time, capital_value, percentage_change_from_yesterday_close, yesterday_close_value
@@ -33,9 +27,6 @@ async function getLatestIndex(indexId) {
   return res.rows[0] ?? null;
 }
 
-/**
- * Insert one index snapshot.
- */
 async function insertIndexSnapshot(row) {
   await query(
     `INSERT INTO index_snapshots
@@ -51,11 +42,8 @@ async function insertIndexSnapshot(row) {
   );
 }
 
-// ─── Stock ────────────────────────────────────────────────────────────────────
 
-/**
- * Fetch all stock snapshots in [fromMs, toMs] ordered by time ASC.
- */
+// ----------- Stock queries ----------------
 async function getStockHistory(tradeCode, fromMs, toMs) {
   const res = await query(
     `SELECT time, close_price, yesterday_close_price
@@ -67,9 +55,6 @@ async function getStockHistory(tradeCode, fromMs, toMs) {
   return res.rows;
 }
 
-/**
- * Get the latest stock snapshot.
- */
 async function getLatestStock(tradeCode) {
   const res = await query(
     `SELECT time, close_price, yesterday_close_price
@@ -82,9 +67,6 @@ async function getLatestStock(tradeCode) {
   return res.rows[0] ?? null;
 }
 
-/**
- * Insert one stock snapshot.
- */
 async function insertStockSnapshot(row) {
   await query(
     `INSERT INTO stock_snapshots
