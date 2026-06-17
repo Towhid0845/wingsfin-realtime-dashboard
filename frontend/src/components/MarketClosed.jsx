@@ -14,7 +14,7 @@ export default function MarketClosed({ session }) {
     <div
       style={{
         display: "flex",
-        flexDirection: "column",
+        flexDirection: "column", 
         alignItems: "center",
         justifyContent: "center",
         minHeight: 420,
