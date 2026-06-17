@@ -4,10 +4,8 @@ const { getIndexHistory, getLatestIndex } = require("../db/repository");
 const { buildIndexSeries } = require("../services/chartService");
 const { getMarketSession } = require("../config/market");
 
-/**
- * GET /api/index/:indexId/history
- * Returns a bucketed 1-min series for the current session.
- */
+
+// Returns a bucketed 1-min series for the current session.
 async function getHistory(req, res) {
   try {
     const { indexId } = req.params;
@@ -38,9 +36,6 @@ async function getHistory(req, res) {
   }
 }
 
-/**
- * GET /api/index/:indexId/latest
- */
 async function getLatest(req, res) {
   try {
     const { indexId } = req.params;

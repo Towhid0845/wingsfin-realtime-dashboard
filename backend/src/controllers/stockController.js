@@ -4,9 +4,6 @@ const { getStockHistory, getLatestStock } = require("../db/repository");
 const { buildStockSeries } = require("../services/chartService");
 const { getMarketSession } = require("../config/market");
 
-/**
- * GET /api/stock/:tradeCode/history
- */
 async function getHistory(req, res) {
   try {
     const { tradeCode } = req.params;
@@ -36,9 +33,6 @@ async function getHistory(req, res) {
   }
 }
 
-/**
- * GET /api/stock/:tradeCode/latest
- */
 async function getLatest(req, res) {
   try {
     const { tradeCode } = req.params;
