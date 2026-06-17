@@ -5,7 +5,7 @@ async function apiFetch(path) {
   if (!res.ok) throw new Error(`API error ${res.status}: ${path}`);
   return res.json();
 }
-
+ 
 export async function fetchMarketStatus() {
   return apiFetch("/market/status");
 }

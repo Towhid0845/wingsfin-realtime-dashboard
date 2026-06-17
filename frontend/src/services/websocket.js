@@ -11,7 +11,7 @@ function connect() {
   ws = new WebSocket(`${WS_URL}/ws`);
 
   ws.onopen = () => {
-    console.log("[WS] Connected");
+    console.log("[WS] Connected"); 
     ws.send(JSON.stringify({ type: "subscribe", channel: "all" }));
     if (reconnectTimer) clearTimeout(reconnectTimer);
   };
