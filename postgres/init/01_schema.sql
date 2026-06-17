@@ -1,10 +1,6 @@
--- ────────────────────────────────────────────────────────────────
--- WingsFin – Database Initialisation
--- ────────────────────────────────────────────────────────────────
-
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- ── Index snapshots ─────────────────────────────────────────────
+-- Index snapshots
 CREATE TABLE IF NOT EXISTS index_snapshots (
     id                                      UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     index_id                                VARCHAR(20)  NOT NULL,
@@ -18,7 +14,7 @@ CREATE TABLE IF NOT EXISTS index_snapshots (
 CREATE INDEX IF NOT EXISTS idx_index_snapshots_index_id_time
     ON index_snapshots (index_id, time DESC);
 
--- ── Stock snapshots ──────────────────────────────────────────────
+-- Stock snapshots
 CREATE TABLE IF NOT EXISTS stock_snapshots (
     id                    UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     trade_code            VARCHAR(20)  NOT NULL,
@@ -31,7 +27,7 @@ CREATE TABLE IF NOT EXISTS stock_snapshots (
 CREATE INDEX IF NOT EXISTS idx_stock_snapshots_trade_code_time
     ON stock_snapshots (trade_code, time DESC);
 
--- ── Market sessions (tracks demo / real sessions) ────────────────
+-- Market sessions (tracks demo / real sessions)
 CREATE TABLE IF NOT EXISTS market_sessions (
     id          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     open_time   BIGINT NOT NULL,
