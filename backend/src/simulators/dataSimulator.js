@@ -1,14 +1,5 @@
 "use strict";
 
-/**
- * Simulates a live data source that emits index and stock updates
- * at randomised non-uniform intervals (SIM_MIN_INTERVAL_MS … SIM_MAX_INTERVAL_MS).
- *
- * Emits events:
- *   "index_update"  → payload matches the assignment spec
- *   "stock_update"  → payload matches the assignment spec
- */
-
 const { EventEmitter } = require("events");
 const { insertIndexSnapshot, insertStockSnapshot } = require("../db/repository");
 const { getMarketSession } = require("../config/market");
