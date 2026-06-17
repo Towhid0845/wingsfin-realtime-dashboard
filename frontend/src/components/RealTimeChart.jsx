@@ -15,9 +15,8 @@ import { buildColorArrays, formatTime, COLORS } from "../utils/chartUtils";
 
 ChartJS.register(...registerables);
 
-/**
- * Blinking dot plugin – animates the last valid data point.
- */
+
+// Blinking dot plugin – animates the last valid data point.
 const blinkingDotPlugin = {
   id: "blinkingDot",
   afterDraw(chart) {
