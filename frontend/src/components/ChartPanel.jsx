@@ -99,7 +99,7 @@ export default function ChartPanel({
             </span>
           </div>
         )}
-        {!loading && error && (
+        {!loading && error && ( 
           <div style={overlayStyle}>
             <span style={{ color: COLORS.below }}>⚠ {error}</span>
           </div>
