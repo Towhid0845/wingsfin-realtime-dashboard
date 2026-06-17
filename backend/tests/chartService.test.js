@@ -1,7 +1,7 @@
 "use strict";
 
 const { buildMinuteSeries, floorToMinute } = require("../src/services/chartService");
-
+ 
 describe("chartService", () => {
   const BASE = Math.floor(1_700_000_000_000 / 60_000) * 60_000; // aligned to minute // arbitrary epoch ms aligned to minute
   const MIN = 60_000;

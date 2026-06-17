@@ -11,7 +11,7 @@ process.env.NODE_ENV = "test";
 
 jest.mock("../src/db/pool", () => ({
   query: jest.fn(),
-  testConnection: jest.fn().mockResolvedValue(true),
+  dbConnection: jest.fn().mockResolvedValue(true),
 }));
 
 jest.mock("../src/db/repository", () => ({
