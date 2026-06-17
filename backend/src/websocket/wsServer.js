@@ -1,18 +1,5 @@
 "use strict";
 
-/**
- * WebSocket server.
- *
- * Each client connects and sends:
- *   { type: "subscribe", channel: "index" | "stock" }
- *
- * Server pushes:
- *   { type: "index_update", payload: { ... } }
- *   { type: "stock_update", payload: { ... } }
- *   { type: "market_status", payload: { isOpen, open, close, isDemo } }
- *   { type: "heartbeat" }
- */
-
 const { WebSocketServer, WebSocket } = require("ws");
 const { getMarketSession } = require("../config/market");
 const simulator = require("../simulators/dataSimulator");
@@ -33,7 +20,7 @@ function broadcast(wss, data) {
 function setupWebSocket(server) {
   const wss = new WebSocketServer({ server, path: "/ws" });
 
-  // ── Simulator → broadcast ────────────────────────────────────────
+  // Simulator → broadcast 
   simulator.on("index_update", (payload) => {
     broadcast(wss, { type: "index_update", payload });
   });
@@ -42,12 +29,12 @@ function setupWebSocket(server) {
     broadcast(wss, { type: "stock_update", payload });
   });
 
-  // ── Periodic market-status push ──────────────────────────────────
+  // Periodic market-status push 
   const marketInterval = setInterval(() => {
     broadcast(wss, { type: "market_status", payload: getMarketSession() });
   }, MARKET_STATUS_INTERVAL_MS);
 
-  // ── Per-client setup ─────────────────────────────────────────────
+  // Per-client setup 
   wss.on("connection", (ws, req) => {
     console.log(`[WS] Client connected from ${req.socket.remoteAddress}`);
 
@@ -61,8 +48,6 @@ function setupWebSocket(server) {
     ws.on("message", (raw) => {
       try {
         const msg = JSON.parse(raw.toString());
-        // Currently we accept subscribe messages but don't do per-channel
-        // filtering – all clients get all updates (efficient for this use case).
         if (msg.type === "subscribe") {
           console.log(`[WS] Client subscribed to ${msg.channel}`);
         }
@@ -80,7 +65,7 @@ function setupWebSocket(server) {
     });
   });
 
-  // ── Heartbeat ping ───────────────────────────────────────────────
+  // Heartbeat ping to detect dead connections
   const pingInterval = setInterval(() => {
     wss.clients.forEach((ws) => {
       if (!ws.isAlive) return ws.terminate();
