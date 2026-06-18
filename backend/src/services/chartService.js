@@ -14,7 +14,8 @@ function buildMinuteSeries(ticks, sessionOpenMs, sessionCloseMs, nowMs) {
 
   const buckets = new Map();
   for (const tick of ticks) {
-    const ms = typeof tick.time === "bigint" ? Number(tick.time) : Number(tick.time);
+    // const ms = typeof tick.time === "bigint" ? Number(tick.time) : Number(tick.time);
+    const ms = Number(tick.time);
     const minute = floorToMinute(ms);
     const val = tick.value ?? tick.capital_value ?? tick.close_price;
     // Latest tick in bucket wins
@@ -24,10 +25,14 @@ function buildMinuteSeries(ticks, sessionOpenMs, sessionCloseMs, nowMs) {
   }
 
   // Walk minute-by-minute, carrying forward last known value
+  const firstTickMinute = ticks.length > 0
+    ? floorToMinute(Number(ticks[0].time))
+    : openMinute;
+  const startMinute = Math.max(openMinute, firstTickMinute);
   const series = [];
   let lastKnown = null;
 
-  for (let m = openMinute; m <= lastMinute; m += 60_000) {
+  for (let m = startMinute; m <= lastMinute; m += 60_000) {
     if (buckets.has(m)) {
       lastKnown = buckets.get(m).value;
     }
