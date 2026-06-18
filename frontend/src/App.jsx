@@ -12,11 +12,14 @@ const CHART_OPTIONS = [
 
 function LiveIndicator() {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+    <div className="live-indicator" style={{ display: "flex", alignItems: "center", gap: 6 }}>
       <span className="live-dot" />
       <span style={{ fontSize: "0.75rem", color: "#22c55e", fontWeight: 600 }}>
         LIVE
       </span>
+      <div className="tooltip">
+        Make DEMO_MODE=false in .env to see live data
+      </div>
     </div>
   );
 }
@@ -44,7 +47,6 @@ export default function App() {
       {/* Top bar */}
       <header className="top-bar">
         <div className="brand">
-          <span className="brand-icon">📈</span>
           <span className="brand-name">WingsFin</span>
           <span className="brand-sub">Real-Time Market Dashboard</span>
         </div>
@@ -73,7 +75,7 @@ export default function App() {
         <div className="controls-row">
           <label
             htmlFor="chart-select"
-            style={{ color: "#94a3b8", fontSize: "0.85rem", fontWeight: 500 }}
+            style={{ color: "#20242a", fontSize: "0.85rem", fontWeight: 500 }}
           >
             Chart Type
           </label>
@@ -108,7 +110,7 @@ export default function App() {
         )}
 
         {/* Session info footer */}
-        {session && (
+        {session && isMarketOpen && (
           <div className="session-info">
             <span>
               Session:{" "}

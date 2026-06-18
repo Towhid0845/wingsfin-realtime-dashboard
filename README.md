@@ -33,7 +33,7 @@ git clone <your-repo-url> wingsfin
 cd wingsfin
 
 # Copy the default env file (edit if needed)
-cp .env .env.local
+cp .env.local .env
 ```
 
 ### 2. Start the full system

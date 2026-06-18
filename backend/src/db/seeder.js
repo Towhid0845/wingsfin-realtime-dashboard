@@ -40,8 +40,13 @@ async function seedIndexData(indexId = "DSEX", yesterdayClose = DSEX_YESTERDAY_C
   const session = getMarketSession();
   const seedEnd = Date.now() - 60_000; // up to 1 min ago
 
-  if (session.open >= seedEnd) {
-    console.log("[Seeder] Session too new – skipping index seed");
+  // if (session.open >= seedEnd) {
+  //   console.log("[Seeder] Session too new – skipping index seed");
+  //   return 0;
+  // }
+
+  if (seedEnd <= session.open) {
+    console.log("[Seeder] Market just opened, no history to seed yet");
     return 0;
   }
 
@@ -86,8 +91,12 @@ async function seedStockData(tradeCode = "GP", yesterdayClose = GP_YESTERDAY_CLO
   const session = getMarketSession();
   const seedEnd = Date.now() - 60_000;
 
-  if (session.open >= seedEnd) {
-    console.log("[Seeder] Session too new – skipping stock seed");
+  // if (session.open >= seedEnd) {
+  //   console.log("[Seeder] Session too new – skipping stock seed");
+  //   return 0;
+  // }
+  if (seedEnd <= session.open) {
+    console.log("[Seeder] Market just opened, no history to seed yet");
     return 0;
   }
 
@@ -117,6 +126,9 @@ async function seedStockData(tradeCode = "GP", yesterdayClose = GP_YESTERDAY_CLO
 
 async function seedAll() {
   console.log("[Seeder] Starting historical data seed...");
+  const session = getMarketSession();
+  await query(`DELETE FROM index_snapshots WHERE time < $1`, [session.open]);
+  await query(`DELETE FROM stock_snapshots WHERE time < $1`, [session.open]);
   await Promise.all([seedIndexData(), seedStockData()]);
   console.log("[Seeder] Seed complete.");
 }

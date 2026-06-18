@@ -20,14 +20,13 @@ export default function MarketClosed({ session }) {
         minHeight: 420,
         gap: 16,
         padding: 40,
-        background: "rgba(15,23,42,0.7)",
+        background: "rgb(15, 23, 42)",
         border: "1px solid rgba(255,255,255,0.08)",
         borderRadius: 16,
         backdropFilter: "blur(12px)",
         textAlign: "center",
       }}
     >
-      <div style={{ fontSize: "3rem" }}>📊</div>
       <h2
         style={{
           color: "#f1f5f9",

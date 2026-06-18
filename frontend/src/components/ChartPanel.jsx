@@ -46,7 +46,7 @@ export default function ChartPanel({
   return (
     <div
       style={{
-        background: "rgba(15,23,42,0.7)",
+        background: "rgb(15, 23, 42)",
         border: "1px solid rgba(255,255,255,0.08)",
         borderRadius: 16,
         padding: "20px 24px",
@@ -69,12 +69,12 @@ export default function ChartPanel({
             {title}
           </div>
           {subtitle && (
-            <div style={{ fontSize: "0.8rem", color: "#64748b", marginTop: 2 }}>
+            <div style={{ fontSize: "0.8rem", color: "#ffffff", marginTop: 2 }}>
               {subtitle}
             </div>
           )}
           {yesterdayClose !== null && (
-            <div style={{ fontSize: "0.75rem", color: "#475569", marginTop: 3 }}>
+            <div style={{ fontSize: "0.75rem", color: "#ffffff", marginTop: 3 }}>
               Yesterday's Close:{" "}
               <span style={{ color: COLORS.reference }}>
                 {yesterdayClose?.toFixed(2)}{unit}
